@@ -12,12 +12,14 @@ export const DUR = {
   hover: 0.15,      // --dur-hover   - hover affordance
   transform: 0.2,   // --dur-transform - lift, scale, slide
   enter: 0.32,      // --dur-enter   - element entrance
+  deal: 0.5,       // --dur-deal - larger card movements
   hero: 0.48,       // --dur-hero    - championship / hero entrance
   travel: 0.6,      // --dur-travel  - measured bracket movement
 };
 
 // cubic-bezier control points, matching tokens.css 1:1.
 export const EASE = {
+  deal: [0.25, 0.1, 0.25, 1], // --ease-deal - balanced physical movement
   out: [0.2, 0.8, 0.2, 1],     // --ease-out - the house curve
   in: [0.5, 0, 0.85, 0.4],     // --ease-in  - exits only
   travel: [0.5, 0, 0.2, 1],    // --ease-travel - bracket travel path (unused by FM; WAAPI owns it)
@@ -55,12 +57,12 @@ export const chipPop = {
   exit: { opacity: 0, transition: { duration: DUR.micro, ease: EASE.in } },
 };
 
-// Full phases move as one restrained broadcast panel. Descendants should not
-// repeat this entrance with their own CSS animation.
+// Scene changes fade as one panel. Nested cards own spatial entrances, so
+// their movements are never multiplied by an ancestor translation.
 export const wipeIn = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0, transition: { duration: DUR.enter, ease: EASE.out } },
-  exit: { opacity: 0, y: -4, transition: { duration: DUR.transform, ease: EASE.in } },
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: DUR.enter, ease: EASE.out } },
+  exit: { opacity: 0, transition: { duration: DUR.transform, ease: EASE.in } },
 };
 
 // ── R2 Card - spring physics, PlayerCard only ──────────────────────────────
@@ -91,7 +93,6 @@ export const cardLeave = {
 
 export const glitchPulse = {
   animate: {
-    x: [0, -3, 2, -1, 0],
     filter: ['saturate(1)', 'saturate(1.4) hue-rotate(-4deg)', 'saturate(1)'],
     transition: { duration: 0.18, ease: EASE.out },
   },
@@ -103,7 +104,6 @@ export const glitchPulse = {
 // blip, so the color drains and stays drained.
 export const eliminationFlash = {
   animate: {
-    x: [0, -3, 2, -1, 0],
     filter: ['saturate(1)', 'saturate(1.4) hue-rotate(-4deg)', 'saturate(0.25) contrast(1.05)'],
     transition: { duration: DUR.hero, ease: EASE.out },
   },
@@ -117,7 +117,7 @@ export function tierEntrance(palette) {
     case 'icon':
     case 'prestige':
       return {
-        initial: { opacity: 0.35, x: 18, y: 18, rotateZ: 3 },
+        initial: { opacity: 0.35, x: 10, y: 12, rotateZ: 1 },
         animate: {
           opacity: 1,
           x: 0,
@@ -128,7 +128,7 @@ export function tierEntrance(palette) {
       };
     case 'gold':
       return {
-        initial: { opacity: 0, x: 16, y: 14, rotateZ: 2 },
+        initial: { opacity: 0, x: 8, y: 10, rotateZ: 1 },
         animate: {
           opacity: 1,
           x: 0,
@@ -139,7 +139,7 @@ export function tierEntrance(palette) {
       };
     default:
       return {
-        initial: { opacity: 0, x: 14, y: 8 },
+        initial: { opacity: 0, x: 6, y: 8 },
         animate: { opacity: 1, x: 0, y: 0, transition: { ...cardSpring, opacity: { duration: DUR.transform } } },
       };
   }

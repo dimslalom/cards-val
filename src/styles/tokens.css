@@ -129,18 +129,20 @@
   --dur-hover: 150ms;       /* hover affordance */
   --dur-transform: 200ms;   /* lift, scale, slide */
   --dur-enter: 320ms;       /* element entrance */
+  --dur-deal: 500ms;       /* larger card movement */
   --dur-hero: 480ms;        /* championship / hero entrance */
   --dur-travel: 600ms;      /* measured bracket movement */
 
+  --ease-deal: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);   /* the house curve */
   --ease-in: cubic-bezier(0.5, 0, 0.85, 0.4);   /* exits only */
   --ease-travel: cubic-bezier(0.5, 0, 0.2, 1);  /* bracket travel path */
 
   --stagger: 40ms;
   --pack-stagger: 65ms;
-  --pack-wave-period: 3200ms;
+  --pack-wave-period: 4400ms;
   --pack-wave-start: 600ms;
-  --pack-impact-delay: 360ms;
+  --pack-impact-delay: 700ms;
   --flip-flash-delay: 250ms;
 
   /* --- Elevation -------------------------------------------------------- */

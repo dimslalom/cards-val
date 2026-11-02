@@ -148,11 +148,11 @@
    the card has actually been turned, so a card that mounts face-up doesn't
    play a flip it never made. */
 .flip[data-flipped="true"] {
-  animation: wristFlip var(--dur-hero) var(--ease-out) both;
+  animation: wristFlip var(--dur-hero) var(--ease-deal) both;
 }
 
 .flip[data-flipped="back"] {
-  animation: wristFlipBack var(--dur-hero) var(--ease-out) both;
+  animation: wristFlipBack var(--dur-hero) var(--ease-deal) both;
 }
 
 .flip[data-flipped="true"]::after,
@@ -167,22 +167,22 @@
 }
 
 .flip[data-flipped="true"]::after {
-  animation: flipFlash var(--dur-micro) linear var(--flip-flash-delay) both;
+  display: none;
 }
 
 .flip[data-flipped="back"]::after {
-  animation: flipFlashBack var(--dur-micro) linear var(--flip-flash-delay) both;
+  display: none;
 }
 
 @keyframes wristFlip {
   0% { transform:rotateY(0) translateY(0) scale(1); }
-  50% { transform:rotateY(90deg) translateY(-18px) scale(1.08); }
+  50% { transform:rotateY(90deg) translateY(-6px) scale(1.02); }
   100% { transform:rotateY(180deg) translateY(0) scale(1); }
 }
 
 @keyframes wristFlipBack {
   0% { transform:rotateY(180deg) translateY(0) scale(1); }
-  50% { transform:rotateY(90deg) translateY(-18px) scale(1.08); }
+  50% { transform:rotateY(90deg) translateY(-6px) scale(1.02); }
   100% { transform:rotateY(0) translateY(0) scale(1); }
 }
 
@@ -222,7 +222,6 @@
     var(--z, 0px)
   );
   backface-visibility: hidden;
-  transition: transform var(--dur-hover) var(--ease-out);
 }
 
 .faceBack {
@@ -308,8 +307,9 @@
   .tilt { transform:none !important; }
   .ambientShadow { display:none; }
   .cardRoot:focus-visible .clickable,.clickable:hover { outline:2px solid var(--accent); outline-offset:3px; }
-  .flip,.flip[data-flipped="true"] { animation:none; transition:opacity var(--dur-micro); transform:rotateY(var(--flip,0deg)); }
-  .flip[data-flipped="true"]::after { display:none; }
+  .flip,.flip[data-flipped="true"],.flip[data-flipped="back"] { animation:none; transition:opacity var(--dur-micro); transform:rotateY(var(--flip,0deg)); }
+  .flip[data-flipped="true"]::after,.flip[data-flipped="back"]::after { display:none; }
+  .contactShadow { animation:none !important; }
 }
 
 /* ── Specialties rail - a vertical column of cut-corner icon frames pinned to

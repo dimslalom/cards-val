@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { assetPath } from '../lib/utils';
 import { animate as animeAnimate, MS, ANIME_EASE } from '../lib/anime';
-import useReducedMotion from '../lib/useReducedMotion';
+import useReducedMotion, { prefersReducedMotion } from '../lib/useReducedMotion';
 import { playUiSound } from '../lib/gameAudio';
 import styles from './PackTear.module.css';
 
@@ -34,6 +34,10 @@ export default function PackTear({
   insideSrc = '/assets/pack/Card-Inside.png',
 }) {
   const wrapRef = useRef(null);
+  const tearFrameRef = useRef(0);
+  const timersRef = useRef([]);
+  const bodyAnimationRef = useRef(null);
+  const flapAnimationRef = useRef(null);
   const bodyRef = useRef(null);
   const restRef = useRef(null);
   const flapRef = useRef(null);
@@ -48,6 +52,9 @@ export default function PackTear({
   // Paint the current tear: the attached piece right of the line, the torn piece left of it,
   // hinged on the line and curled up by `lift` degrees.
   const paint = (dx = 0, dy = 0, extraRot = 0) => {
+    // An automatic tear keeps animating if the pack leaves the screen mid-way,
+    // which happens when a lobby's draft clock moves on.
+    if (!wrapRef.current) return;
     const { w, s } = size();
     const x = st.current.tear * w;
     const line = zig(x, s);
@@ -61,9 +68,10 @@ export default function PackTear({
   const finish = () => {
     if (st.current.finished) return;
     st.current.finished = true;
-    if (bodyRef.current && !reducedMotion) {
-      animeAnimate(bodyRef.current, { translateY: 60, rotateX: 25, opacity: [1, 0], duration: MS.enter, ease: ANIME_EASE.in });
-      setTimeout(onTorn, MS.enter);
+    if (bodyRef.current && !prefersReducedMotion()) {
+      bodyAnimationRef.current = animeAnimate(bodyRef.current, { translateY: 60, rotateX: 25, opacity: [1, 0], duration: MS.enter, ease: ANIME_EASE.in });
+      // Keep the foil mounted until its 380ms flight has also completed.
+      timersRef.current.push(setTimeout(() => onTorn?.(), Math.max(MS.enter, 380)));
     } else onTorn?.();
   };
 
@@ -78,7 +86,7 @@ export default function PackTear({
     const tx = from.dx + vx * k * 380;
     const ty = from.dy + (vy * k - 0.25) * 380;
     const spin = st.current.lift + 30 * Math.sign(vx || 1);
-    flapRef.current.animate(
+    flapAnimationRef.current = flapRef.current.animate(
       [{ transform: flapRef.current.style.transform, opacity: 1 }, { transform: `translate(${tx}px, ${ty}px) rotate(${-spin}deg)`, opacity: 0 }],
       { duration: 380, easing: 'cubic-bezier(0.2, 0.6, 0.4, 1)', fill: 'forwards' },
     );
@@ -105,10 +113,11 @@ export default function PackTear({
     const step = now => {
       const k = Math.min(1, (now - t0) / AUTO_TEAR_MS);
       tearTo(start + (1 - start) * (1 - (1 - k) ** 2), k * 30);
-      if (k < 1) requestAnimationFrame(step);
+      if (prefersReducedMotion()) { finish(); return; }
+      if (k < 1) tearFrameRef.current = requestAnimationFrame(step);
       else fling(0.9, -0.6);
     };
-    requestAnimationFrame(step);
+    tearFrameRef.current = requestAnimationFrame(step);
   };
 
   useEffect(() => { paint(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -172,7 +181,21 @@ export default function PackTear({
     s.lift = 6 + s.tear * 10;                           // let go mid-tear: the piece relaxes, stays torn
     flapRef.current.style.transition = 'transform 220ms ease-out';
     paint();
-    setTimeout(() => { if (flapRef.current) flapRef.current.style.transition = ''; }, 220);
+    timersRef.current.push(setTimeout(() => { if (flapRef.current) flapRef.current.style.transition = ''; }, 220));
+  };
+
+  useEffect(() => () => {
+    cancelAnimationFrame(tearFrameRef.current);
+    timersRef.current.forEach(clearTimeout);
+    bodyAnimationRef.current?.pause();
+    flapAnimationRef.current?.cancel();
+  }, []);
+
+  const onCancel = () => {
+    st.current.drag = null;
+    st.current.free = null;
+    // Cancellation preserves a partial tear without interpreting it as a tap.
+    if (!st.current.done) paint();
   };
 
   const top = assetPath(topSrc);
@@ -188,7 +211,7 @@ export default function PackTear({
       onPointerDown={onDown}
       onPointerMove={onMove}
       onPointerUp={onUp}
-      onPointerCancel={onUp}
+      onPointerCancel={onCancel}
       onDragStart={e => e.preventDefault()}   // never let the browser drag the art as an image
     >
       <div ref={bodyRef} className={styles.packBody}>

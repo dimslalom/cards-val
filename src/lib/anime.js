@@ -6,6 +6,7 @@
 // Framer can't express (see the anime.js pass plan).
 import { animate, createTimeline, stagger, cubicBezier } from 'animejs';
 import { DUR, EASE, STAGGER, PACK_STAGGER } from './motion.js';
+import { prefersReducedMotion } from './useReducedMotion.js';
 import { speedMultiplier } from './useRunSpeed.js';
 
 // Anime works in milliseconds; motion.js's DUR is authored in seconds for
@@ -17,6 +18,7 @@ export const PACK_STAGGER_MS = Math.round(PACK_STAGGER * 1000);
 // Anime's ease slot takes a function or a named string, not a raw
 // cubic-bezier array - wrap each of motion.js's curves once.
 export const ANIME_EASE = {
+  deal: cubicBezier(...EASE.deal),
   out: cubicBezier(...EASE.out),
   in: cubicBezier(...EASE.in),
   travel: cubicBezier(...EASE.travel),
@@ -38,8 +40,8 @@ export function gate({ reducedMotion = false, runSpeed = 'normal' } = {}) {
 
 // A short, sharp confirmation pulse on a landed target - counters, banked
 // totals. No glow: a scale beat only, on the house ease.
-export function bump(el, { duration = MS.transform, scale = 1.12 } = {}) {
-  if (!el) return;
+export function bump(el, { duration = MS.transform, scale = 1.05 } = {}) {
+  if (!el || prefersReducedMotion()) return;
   animate(el, {
     scale: [1, scale, 1],
     duration,
