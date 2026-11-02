@@ -1,0 +1,15 @@
+{
+  "name": "cards-val",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "sync-cards": "node scripts/sheet-to-json.js",
+    "sync-vlr": "node scripts/vlr-to-json.js",
+    "sync-icons": "node scripts/vlr-to-json.js --icons-only",
+    "build-portraits": "scripts/.venv/bin/python scripts/build_portraits.py --cards src/data/cards.json"
+  },
+  "devDependencies": {
+    "googleapis": "^174.0.1"
+  }
+}
