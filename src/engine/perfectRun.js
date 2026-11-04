@@ -398,7 +398,10 @@ export function teamSimulationPower(team) {
 
 // ── Maps & match sim ─────────────────────────────────────────────────────────
 
-export const MAP_POOL = ['Ascent', 'Bind', 'Haven', 'Lotus', 'Split', 'Sunset', 'Icebox'];
+export const MAP_POOL = [
+  'Ascent', 'Bind', 'Haven', 'Lotus', 'Split', 'Sunset', 'Icebox',
+  'Abyss', 'Breeze', 'Corrode', 'Fracture', 'Pearl',
+];
 
 export function pickMaps(rng, n) {
   return pickN(rng, MAP_POOL, n);

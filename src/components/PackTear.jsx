@@ -79,7 +79,7 @@ export default function PackTear({
   const fling = (vx, vy, from = { dx: 0, dy: 0 }) => {
     if (st.current.done) return;
     st.current.done = true;
-    playUiSound('lift');
+    playUiSound('pack_open');
     if (reducedMotion) { flapRef.current.style.opacity = 0; finish(); return; }
     const speed = Math.hypot(vx, vy);
     const k = speed < 0.4 ? 0.4 / Math.max(speed, 0.01) : 1;   // a dead drop still gets tossed
@@ -97,7 +97,7 @@ export default function PackTear({
   const tearTo = (t, pullUp = 0) => {
     const s = st.current;
     if (t > s.tear) {
-      if (Math.floor(t * 8) > Math.floor(s.tear * 8)) playUiSound('rattle');   // the foil crackles as it goes
+      if (Math.floor(t * 8) > Math.floor(s.tear * 8)) playUiSound('rattle', Math.floor(t * 8));   // the foil crackles as it goes
       s.tear = Math.min(1, t);
     }
     s.lift = 10 + s.tear * 22 + Math.min(40, Math.max(0, pullUp) * 0.35);

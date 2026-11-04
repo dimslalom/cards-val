@@ -59,6 +59,8 @@ export default function PlayerCard({
   // Career signals from the endless engine (cardSignals). Absent everywhere
   // else, so every other surface renders exactly as it did before.
   signals = null,
+  // Opt-in: one stat key to light on the front, for a screen showing that stat change.
+  highlightStat = null,
 }) {
   // Latched the first time this card is turned, so the return flip animates
   // while a card that mounts face-up plays nothing - every card in the game
@@ -131,6 +133,7 @@ export default function PlayerCard({
           height: CARD_H,
           transform: `scale(${displayScale})`,
           transformOrigin: 'top left',
+          '--inv-scale': (1 / displayScale).toFixed(3),
         }}
       >
         <div
@@ -224,24 +227,6 @@ export default function PlayerCard({
                   </div>
                 )}
 
-                {/* Specialties rail - cut-corner icon frames down the left
-                    edge, spilling half off the card, floated forward in 3D. */}
-                {specialties.length > 0 && (
-                  <div className={styles.specialtiesRail} style={{ ...PLANE.spec, '--spec': specColor }} aria-label="Player specialties">
-                    {specialties.map(spec => (
-                      <div key={spec.key} className={styles.specSlot}>
-                        <div className={styles.specCutChip}>
-                          <SpecialtyIcon spec={spec.key} />
-                        </div>
-                        <div className={styles.specTooltip}>
-                          <b>{spec.name}</b>
-                          <span>{spec.desc}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 <div className={styles.playerName} style={{ color: textColor }}>
                   {card.player}
                 </div>
@@ -249,11 +234,11 @@ export default function PlayerCard({
                 <div className={styles.statContent}>
                   <div className={styles.statRow}>
                     {STAT_KEYS.map((key) => (
-                      <div key={key} className={styles.statItem}>
-                        <span style={{ fontSize: 20, fontWeight: 600, color: mutedColor }}>
+                      <div key={key} className={styles.statItem} data-lit={key === highlightStat || undefined}>
+                        <span style={{ fontSize: 20, fontWeight: 600, color: key === highlightStat ? '#ffffffcc' : mutedColor }}>
                           {STAT_LABELS[key]}
                         </span>
-                        <span style={{ fontSize: 38, fontWeight: 700, color: textColor }}>
+                        <span style={{ fontSize: 38, fontWeight: 700, color: key === highlightStat ? '#ffffff' : textColor }}>
                           {card.stats[key]}
                         </span>
                       </div>
@@ -274,6 +259,29 @@ export default function PlayerCard({
                 style={{ ...PLANE.glare, WebkitMaskImage: `url(${bgSrc})`, maskImage: `url(${bgSrc})` }}
                 aria-hidden="true"
               />
+
+              {/* Specialties rail - bare printed ink crest in the top-right shoulder,
+                  with a compact 1:1 split header readout tag on hover. */}
+              {specialties.length > 0 && (
+                <div
+                  className={styles.specialtiesRail}
+                  style={{ ...PLANE.spec, '--spec': specColor, '--card-ink': textColor }}
+                  aria-label="Player specialties"
+                >
+                  {specialties.map(spec => (
+                    <div key={spec.key} className={styles.specSlot} style={{ '--skill': spec.color ?? specColor }}>
+                      <div className={styles.specCutChip}>
+                        <SpecialtyIcon spec={spec.key} size={34} />
+                        <span>{spec.code}</span>
+                      </div>
+                      <div className={styles.specTooltip}>
+                        <b>{spec.name}</b>
+                        <span>{spec.board ?? spec.short}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* ── BACK FACE ── */}

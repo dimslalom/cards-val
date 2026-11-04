@@ -7,31 +7,46 @@ export const SPECIALTIES = {
   flex: {
     key: 'flex',
     name: 'Flex',
+    code: 'FLX',
     short: 'Fills an extra role',
+    board: 'Moves free during the rotate',
+    color: '#7ce8ff',
     desc: 'Counts as one additional role class for coverage. No role-stacking chemistry penalty.',
   },
   flick: {
     key: 'flick',
     name: 'Flick',
+    code: 'FLK',
     short: 'Aim over positioning',
+    board: 'Alone on a lane: scores their best stat',
+    color: '#ffd36b',
     desc: 'Bonus aim when dueling opponents who out-position them. Raw reactions beat setup.',
   },
   one_trick: {
     key: 'one_trick',
     name: 'One Trick',
+    code: '1TK',
     short: 'Single-agent master',
+    board: '+20 on maps that suit their agent',
+    color: '#ff8a3d',
     desc: 'Mastered a single agent. Bonus ability and synergy when no teammate shares that agent pool.',
   },
   mastermind: {
     key: 'mastermind',
     name: 'Mastermind',
+    code: 'MMD',
     short: 'Elevates as IGL',
+    board: 'As IGL: two rotates',
+    color: '#7fd8ff',
     desc: 'When named IGL, a mid-round read spikes their positioning and mentality by +2 to +10.',
   },
   aura: {
     key: 'aura',
     name: 'Aura',
+    code: 'AUR',
     short: 'Rattles opponents',
+    board: '-15 to the enemy on their lane',
+    color: '#b98cff',
     desc: 'Sheer presence drags down the opposing squad’s mentality every map.',
   },
 };
@@ -89,6 +104,9 @@ export function getCardSpecialties(card) {
   );
   // Data-driven: a single-agent pool (from the VLR sync) is a One Trick.
   if ((card.agents?.length ?? 0) === 1) keys.add('one_trick');
+  if (Array.isArray(card.learned)) {
+    for (const k of card.learned) keys.add(k);
+  }
 
   return SPECIALTY_ORDER
     .filter(k => keys.has(k))

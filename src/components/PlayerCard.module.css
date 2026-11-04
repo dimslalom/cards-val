@@ -121,6 +121,10 @@
 
 /* Promote only while the card is actually being manipulated; a collection
    grid must not leave dozens of dormant GPU layers allocated. */
+.cardRoot:hover,
+.cardRoot:focus-within {
+  z-index: 40;
+}
 .cardRoot:hover .tilt,
 .cardRoot:focus-visible .tilt {
   will-change: transform;
@@ -312,19 +316,17 @@
   .contactShadow { animation:none !important; }
 }
 
-/* ── Specialties rail - a vertical column of cut-corner icon frames pinned to
-      the card's LEFT edge, each spilling half off the card, floated forward via
-      the .spec plane so it pops in the 3D tilt. Base-coordinate (400x580) sizes
-      scale down with displayScale. ── */
+/* ── Specialties rail - bare printed ink crest (icon + 3-letter code) in the
+      card's top-right shoulder, mirroring the 86 / IGL stack on the top-left.
+      Hover opens a counter-scaled 1:1 split-header chip. ── */
 .specialtiesRail {
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
+  right: 6%;
+  top: 10%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 14px;
+  align-items: center;
+  gap: 8px;
   pointer-events: auto;
   z-index: 6;
 }
@@ -332,55 +334,68 @@
 .specSlot { position: relative; }
 
 .specCutChip {
-  width: 62px;
-  height: 62px;
-  transform: translateX(-50%); /* spill half off the left edge */
-  background: var(--surface-flyout);
-  border: 2.5px solid var(--spec, #d8b34c);
-  color: var(--spec, #d8b34c);
-  clip-path: polygon(0 0, calc(100% - 13px) 0, 100% 13px, 100% 100%, 13px 100%, 0 calc(100% - 13px));
+  width: 64px;
+  color: var(--card-ink, #1d1812);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.55);
-  transition: background 0.14s ease, color 0.14s ease;
+  gap: 2px;
+  transition: transform 0.14s ease;
+}
+.specCutChip span {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
 }
 .specSlot:hover .specCutChip {
-  background: var(--spec, #d8b34c);
-  color: #0c1019;
+  transform: translateY(-2px) scale(1.06);
 }
 
 .specTooltip {
   position: absolute;
-  left: calc(50% + 16px);
-  top: 50%;
-  transform: translateY(-50%) translateX(-6px);
-  width: 300px;
-  background: var(--surface-flyout);
-  border: 2px solid var(--spec, #d8b34c);
-  padding: 12px 16px;
-  color: #fff;
-  font-size: 15px;
-  line-height: 1.4;
+  right: 0;
+  top: calc(100% + 12px);
+  transform-origin: top right;
+  transform: scale(calc(var(--inv-scale, 1) * 0.95)) translateY(-3px);
+  width: max-content;
+  max-width: 196px;
+  box-sizing: border-box;
+  background: #10131d;
+  color: #ece8e1;
+  padding: 0;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.25;
+  display: flex;
+  flex-direction: column;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.14s ease, transform 0.14s ease;
-  z-index: 10;
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  z-index: 20;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5));
 }
 .specTooltip b {
   display: block;
-  color: var(--spec, #d8b34c);
-  font-size: 22px;
-  font-weight: 700;
+  background: var(--skill, #7fd8ff);
+  color: #0d0f17;
+  padding: 4px 10px;
+  font: 800 11px/1.2 ui-monospace, Menlo, monospace;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 4px;
+  letter-spacing: 0.08em;
+}
+.specTooltip span {
+  display: block;
+  padding: 6px 10px;
+  color: #ece8e1;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
 }
 .specSlot:hover .specTooltip {
   opacity: 1;
-  transform: translateY(-50%) translateX(0);
+  transform: scale(var(--inv-scale, 1)) translateY(0);
 }
 
 /* ── Top-left: rating, role abbr, flag ── */
@@ -449,6 +464,13 @@
   align-items: center;
   gap: 0;
   line-height: 1;
+}
+
+/* A lit stat: the one a screen is showing change. */
+.statItem[data-lit] {
+  margin: -6px -8px;
+  padding: 6px 8px;
+  background: #16181f;
 }
 
 .logoRow {
