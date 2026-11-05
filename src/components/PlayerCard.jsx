@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { m } from 'motion/react';
 import { roleAbbr, cardTextColor, countryName, regionFullName, assetPath } from '../lib/utils';
 import useCardTilt from '../lib/useCardTilt';
-import { getCardSpecialties } from '../data/specialties';
+import { EVO_SKILLS, getCardSpecialties } from '../data/specialties';
 import { cardSpring, DUR, EASE } from '../lib/motion';
 import SpecialtyIcon from './SpecialtyIcon';
 import PlayerPortrait from './PlayerPortrait';
+import EvoFx from './EvoFx';
+import { evoFace } from './evoArt';
 import CountryFlag from './CountryFlag';
 import { playUiSound } from '../lib/gameAudio';
 import styles from './PlayerCard.module.css';
@@ -17,11 +19,12 @@ const CARD_W = 400;
 const CARD_H = 580;
 
 const PLANE = {
-  bg:    { '--z': '0px',   '--shift': '0px' },
-  photo: { '--z': '11px',  '--shift': '6px' },
-  top:   { '--z': '22px',  '--shift': '14px' }, // stat bg, text, logos
-  glare: { '--z': '27px',  '--shift': '0px' },
-  spec:  { '--z': '32px',  '--shift': '18px' }, // specialty rail, pops forward
+  bg:          { '--z': '0px',   '--shift': '0px' },
+  photo:       { '--z': '11px',  '--shift': '6px' },
+  evoFrame:    { '--z': '16px',  '--shift': '9px' },  // evo frame and crest
+  top:         { '--z': '22px',  '--shift': '14px' }, // stat bg, text, logos
+  glare:       { '--z': '27px',  '--shift': '0px' },
+  spec:        { '--z': '32px',  '--shift': '18px' }, // specialty rail, pops forward
 };
 
 // Specialty chip frame color tracks the card's tier metal.
@@ -61,6 +64,9 @@ export default function PlayerCard({
   signals = null,
   // Opt-in: one stat key to light on the front, for a screen showing that stat change.
   highlightStat = null,
+  // Opt-in: an evolved rare or apex card runs its effects around the card.
+  // Only big, focused cards should: grids and docks show the card still.
+  evoFx = false,
 }) {
   // Latched the first time this card is turned, so the return flip animates
   // while a card that mounts face-up plays nothing - every card in the game
@@ -70,13 +76,17 @@ export default function PlayerCard({
   const [turned, setTurned] = useState(false);
   if (flipped && !turned) setTurned(true);
 
-  const textColor  = cardTextColor(card.palette);
+  // An evolved card wears its evo's art instead of the tier metal.
+  const face = card.evoTheme ? evoFace(card.evoTheme, card.evoLevel) : null;
+  const textColor  = face ? face.ink : cardTextColor(card.palette);
   const mutedColor = textColor + 'aa';
   const showEditionTop = card.tier === 'prestige' || card.tier === 'iconic';
   const regionLogo = assetPath(`/assets/regions/${card.region.toLowerCase()}.png`);
   const bgSrc = assetPath(`/assets/card-bg/${card.palette}-bg.png`);
+  const maskImage = face ? face.mask : `url(${bgSrc})`;
   const specialties = showSpecialties ? getCardSpecialties(card) : [];
-  const specColor = SPEC_COLOR[card.palette] ?? SPEC_COLOR.gold;
+  const specColor = face ? face.metal[1] : SPEC_COLOR[card.palette] ?? SPEC_COLOR.gold;
+  const showFx = Boolean(face) && evoFx && face.tier !== 'common';
 
   const {
     tiltRef,
@@ -136,11 +146,14 @@ export default function PlayerCard({
           '--inv-scale': (1 / displayScale).toFixed(3),
         }}
       >
+        {showFx && <EvoFx theme={card.evoTheme} level={card.evoLevel} layer="back" />}
         <div
           ref={tiltRef}
           className={[styles.tilt, onClick ? styles.clickable : ''].join(' ')}
           data-palette={card.palette}
           data-tier={card.tier}
+          data-evo-theme={card.evoTheme || undefined}
+          data-evo-level={card.evoLevel || undefined}
           data-flipped={flipped ? 'true' : turned ? 'back' : undefined}
           style={{
             fontFamily: "'Familjen Grotesk', sans-serif",
@@ -153,12 +166,12 @@ export default function PlayerCard({
               compositor tile around cut-corner/transparent card artwork. */}
           <span
             className={styles.contactShadow}
-            style={{ WebkitMaskImage: `url(${bgSrc})`, maskImage: `url(${bgSrc})` }}
+            style={{ WebkitMaskImage: maskImage, maskImage }}
             aria-hidden="true"
           />
           <span
             className={styles.ambientShadow}
-            style={{ WebkitMaskImage: `url(${bgSrc})`, maskImage: `url(${bgSrc})` }}
+            style={{ WebkitMaskImage: maskImage, maskImage }}
             aria-hidden="true"
           />
           {selected && <span className={styles.selectionCorners} aria-hidden="true" />}
@@ -170,7 +183,11 @@ export default function PlayerCard({
 
             {/* ── FRONT FACE ── */}
             <div className={`${styles.face} ${styles.faceFront}`}>
-              <img className={styles.layerBg} style={PLANE.bg} src={bgSrc} alt="" aria-hidden="true" draggable={false} />
+              {face ? (
+                <div className={styles.layerBg} style={PLANE.bg} aria-hidden="true" dangerouslySetInnerHTML={{ __html: face.back }} />
+              ) : (
+                <img className={styles.layerBg} style={PLANE.bg} src={bgSrc} alt="" aria-hidden="true" draggable={false} />
+              )}
 
               <PlayerPortrait
                 card={card}
@@ -181,14 +198,16 @@ export default function PlayerCard({
                 fetchPriority={portraitFetchPriority}
               />
 
-              <img
+              {face && <div className={styles.layerEvoFrame} style={PLANE.evoFrame} aria-hidden="true" dangerouslySetInnerHTML={{ __html: face.front }} />}
+
+              {!face && <img
                 className={styles.layerStatBg}
                 style={PLANE.top}
                 src={assetPath(`/assets/stat-bg/${card.palette}-stat-bg.png`)}
                 alt=""
                 aria-hidden="true"
                 draggable={false}
-              />
+              />}
 
               <div className={styles.layerText} style={PLANE.top}>
                 <div className={styles.topLeft}>
@@ -256,7 +275,7 @@ export default function PlayerCard({
 
               <div
                 className={styles.glare}
-                style={{ ...PLANE.glare, WebkitMaskImage: `url(${bgSrc})`, maskImage: `url(${bgSrc})` }}
+                style={{ ...PLANE.glare, WebkitMaskImage: maskImage, maskImage }}
                 aria-hidden="true"
               />
 
@@ -265,12 +284,13 @@ export default function PlayerCard({
               {specialties.length > 0 && (
                 <div
                   className={styles.specialtiesRail}
-                  style={{ ...PLANE.spec, '--spec': specColor, '--card-ink': textColor }}
+                  data-evo={face ? '' : undefined}
+                  style={{ ...PLANE.spec, '--spec': specColor, '--card-ink': textColor, '--halo': face?.floor }}
                   aria-label="Player specialties"
                 >
                   {specialties.map(spec => (
-                    <div key={spec.key} className={styles.specSlot} style={{ '--skill': spec.color ?? specColor }}>
-                      <div className={styles.specCutChip}>
+                    <div key={spec.key} className={styles.specSlot} style={{ '--skill': face && EVO_SKILLS.has(spec.key) ? face.metal[1] : spec.color ?? specColor }}>
+                      <div className={styles.specCutChip} data-evo={EVO_SKILLS.has(spec.key) || undefined}>
                         <SpecialtyIcon spec={spec.key} size={34} />
                         <span>{spec.code}</span>
                       </div>
@@ -287,7 +307,9 @@ export default function PlayerCard({
             {/* ── BACK FACE ── */}
             {flippable && (
               <div className={`${styles.face} ${styles.faceBack}`}>
-                <img className={styles.layerBg} src={bgSrc} alt="" aria-hidden="true" draggable={false} />
+                {face
+                  ? <div className={styles.layerBg} aria-hidden="true" dangerouslySetInnerHTML={{ __html: face.back }} />
+                  : <img className={styles.layerBg} src={bgSrc} alt="" aria-hidden="true" draggable={false} />}
                 <div className={styles.backContent} style={{ color: textColor }}>
                   <div className={styles.backHeader}>
                     <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.25em', color: mutedColor }}>
@@ -352,6 +374,7 @@ export default function PlayerCard({
 
           </div>
         </div>
+        {showFx && <EvoFx theme={card.evoTheme} level={card.evoLevel} layer="front" />}
       </div>
     </m.div>
   );

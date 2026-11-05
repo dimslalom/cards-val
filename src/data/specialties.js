@@ -49,9 +49,60 @@ export const SPECIALTIES = {
     color: '#b98cff',
     desc: 'Sheer presence drags down the opposing squad’s mentality every map.',
   },
+  anchor: {
+    key: 'anchor',
+    name: 'Anchor',
+    code: 'ANC',
+    short: 'Site lockdown duo',
+    board: 'With 1 teammate: both +12',
+    color: '#a9dcff',
+    desc: 'Holds down the site in a 2-man setup. Grants +12 defensive boost to both.',
+  },
+  first_blood: {
+    key: 'first_blood',
+    name: 'First Blood',
+    code: 'FBD',
+    short: 'Aggressive opening duelist',
+    board: 'On primary lane: +20',
+    color: '#f87171',
+    desc: 'Opening duel specialist. Gains +20 duel bonus on the first lane.',
+  },
+  clutch: {
+    key: 'clutch',
+    name: 'Clutch',
+    code: 'CLT',
+    short: 'Underdog round winner',
+    board: 'Alone vs 2+: +25',
+    color: '#c084fc',
+    desc: 'Thrives under pressure. When alone against 2 or more enemies on a lane, gains +25 power.',
+  },
+  synergy_link: {
+    key: 'synergy_link',
+    name: 'Synergy Link',
+    code: 'LNK',
+    short: 'Universal team chemistry',
+    board: 'Teammate combo with anyone',
+    color: '#22d3ee',
+    desc: 'Adapts seamlessly to any squad. Triggers +15 teammate combo with any lane partner.',
+  },
+  overdrive: {
+    key: 'overdrive',
+    name: 'Overdrive',
+    code: 'OVD',
+    short: 'Momentum catalyst',
+    board: 'Win lane: +0.2x other lanes',
+    color: '#fbbf24',
+    desc: 'Dominates their lane to create space. Winning this lane boosts all other lanes by +0.2x.',
+  },
 };
 
-export const SPECIALTY_ORDER = ['flex', 'flick', 'one_trick', 'mastermind', 'aura'];
+/** Skills a card can only learn by finishing an evo. */
+export const EVO_SKILLS = new Set(['anchor', 'first_blood', 'clutch', 'synergy_link', 'overdrive']);
+
+export const SPECIALTY_ORDER = [
+  'flex', 'flick', 'one_trick', 'mastermind', 'aura',
+  'anchor', 'first_blood', 'clutch', 'synergy_link', 'overdrive',
+];
 
 // Curated from VLR player reputations. Keys are lowercased player names; the
 // card's synced agent pool decides One Trick on top of this.

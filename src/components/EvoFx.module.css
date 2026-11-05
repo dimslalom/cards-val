@@ -1,0 +1,51 @@
+/* Lives inside PlayerCard's 400x580 stage, so every number is in card pixels. */
+.fx {
+  position: absolute;
+  left: -88px;
+  top: -104px;
+  width: 576px;
+  height: 789px;
+  pointer-events: none;
+}
+.fx[data-layer='back'] { z-index: 0; }
+.fx[data-layer='front'] { z-index: 2; }
+.fx > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.embers { position: absolute; left: 88px; top: 104px; width: 400px; height: 580px; }
+
+.spin { transform-box: view-box; transform-origin: 200px 290px; animation: spin 9s steps(45) infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.beep { transform-box: view-box; transform-origin: 200px 290px; opacity: 0; animation: beep 2.4s ease-out infinite; }
+@keyframes beep { 0% { transform: scale(.96); opacity: .8; } 70%, 100% { transform: scale(1.07); opacity: 0; } }
+
+.packet { stroke-dasharray: 4 396; animation: packet var(--dur, 2s) linear var(--d, 0s) infinite; }
+@keyframes packet { to { stroke-dashoffset: -400; } }
+
+.blink { animation: blink 1.6s steps(2) var(--d, 0s) infinite; }
+@keyframes blink { 50% { opacity: .15; } }
+
+.comet { stroke-dashoffset: var(--o); animation: comet var(--dur, 3.6s) linear infinite; }
+@keyframes comet { from { stroke-dashoffset: var(--o); } to { stroke-dashoffset: calc(var(--o) - 100); } }
+
+/* The border flares on the beat of the claw swipe. */
+.surge { opacity: 0; animation: surge 5s ease-out infinite; }
+@keyframes surge { 0% { opacity: .9; } 12%, 100% { opacity: 0; } }
+
+.bolt { opacity: 0; animation: flicker var(--dur, 3s) linear var(--d, 0s) infinite; }
+@keyframes flicker { 0%, 100% { opacity: 0; } 3% { opacity: 1; } 5% { opacity: .15; } 7% { opacity: 1; } 11% { opacity: 0; } }
+
+.swipe { stroke-dasharray: 620; stroke-dashoffset: 620; opacity: 0; animation: swipe 5s cubic-bezier(.2, .8, .2, 1) var(--d, 0s) infinite; }
+@keyframes swipe { 0% { stroke-dashoffset: 620; opacity: 1; } 7% { stroke-dashoffset: 0; opacity: 1; } 16%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+
+.ember { position: absolute; bottom: 4%; width: var(--s, 5px); height: var(--s, 5px); background: #ffd27a; opacity: 0; animation: rise var(--dur) linear var(--d) infinite; }
+.ember[data-red] { background: #ff2d55; }
+@keyframes rise {
+  0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--h)) rotate(45deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx * { animation: none !important; }
+  .ember, .swipe, .bolt, .surge, .beep { display: none; }
+}

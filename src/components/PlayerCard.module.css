@@ -348,6 +348,13 @@
   letter-spacing: 0.04em;
   line-height: 1;
 }
+/* A skill earned through an evo: same crest, in its evo's colour. */
+/* On evo art the crest sits on a busy motif: a tight outline in the evo's
+   darkest tone lifts it off without putting a plate behind it. */
+.specialtiesRail[data-evo] .specCutChip {
+  filter: drop-shadow(2px 0 0 var(--halo)) drop-shadow(-2px 0 0 var(--halo)) drop-shadow(0 2px 0 var(--halo)) drop-shadow(0 -2px 0 var(--halo));
+}
+.specCutChip[data-evo] { color: var(--skill); }
 .specSlot:hover .specCutChip {
   transform: translateY(-2px) scale(1.06);
 }
@@ -604,3 +611,18 @@
 }
 .trend[data-dir='up'] { border-bottom: 5px solid currentColor; }
 .trend[data-dir='down'] { border-top: 5px solid currentColor; }
+
+/* ── Evo face: the evo's art replaces the tier metal (see evoArt.js) ── */
+.layerEvoFrame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.layerBg > svg,
+.layerEvoFrame > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}

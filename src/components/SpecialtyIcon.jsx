@@ -36,6 +36,42 @@ const INNER = {
       <path d="M17.4 3.6a10 10 0 0 1 0 12.8" />
     </g>
   ),
+  // Anchor - lockdown site duo defense.
+  anchor: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="10" cy="4.5" r="2" />
+      <path d="M10 6.5v10.5M7 9h6M4.5 12.5C5.5 16 8 17 10 17s4.5-1 5.5-4.5" />
+    </g>
+  ),
+  // First Blood - sharp opening blade / duel burst.
+  first_blood: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 2l3.5 6-3.5 10-3.5-10z" />
+      <path d="M10 2v16" />
+    </g>
+  ),
+  // Clutch - lone target star amidst the chaos.
+  clutch: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 2.5l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" fill="currentColor" fillOpacity="0.25" />
+      <circle cx="10" cy="10" r="2" fill="currentColor" />
+    </g>
+  ),
+  // Synergy Link - interconnected team nodes.
+  synergy_link: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="10" r="3" />
+      <circle cx="14" cy="10" r="3" />
+      <path d="M9 10h2M10 7v6" />
+    </g>
+  ),
+  // Overdrive - momentum booster wave.
+  overdrive: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 11l6-6 6 6" />
+      <path d="M4 16l6-6 6 6" />
+    </g>
+  ),
 };
 
 export default function SpecialtyIcon({ spec, size = '58%' }) {
