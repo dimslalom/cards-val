@@ -65,11 +65,89 @@ const INNER = {
       <path d="M9 10h2M10 7v6" />
     </g>
   ),
-  // Overdrive - momentum booster wave.
+  // Overdrive: momentum booster wave.
   overdrive: (
     <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 11l6-6 6 6" />
       <path d="M4 16l6-6 6 6" />
+    </g>
+  ),
+  // Ironclad: reinforced fortress wall plate.
+  ironclad: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4h12v12H4z" />
+      <path d="M4 10h12M10 4v12" />
+      <circle cx="7" cy="7" r="0.8" fill="currentColor" />
+      <circle cx="13" cy="7" r="0.8" fill="currentColor" />
+      <circle cx="7" cy="13" r="0.8" fill="currentColor" />
+      <circle cx="13" cy="13" r="0.8" fill="currentColor" />
+    </g>
+  ),
+  // Lurk: silent curved flank blade.
+  lurk: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 3c-4 1-8 6-8 11 0 2 1 3 3 3 5 0 10-4 11-8-2 0-4-2-6-6z" />
+      <circle cx="8" cy="14" r="1.5" fill="currentColor" />
+    </g>
+  ),
+  // Velocity: kinetic forward speed darts.
+  velocity: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6l6 4-6 4M10 6l6 4-6 4" />
+    </g>
+  ),
+  // Combustion: blazing solar flare core.
+  combustion: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="10" cy="10" r="3.5" fill="currentColor" fillOpacity="0.25" />
+      <path d="M10 2v3M10 15v3M2 10h3M15 10h3M4.5 4.5l2.2 2.2M13.3 13.3l2.2 2.2M4.5 15.5l2.2-2.2M13.3 6.7l2.2-2.2" />
+    </g>
+  ),
+  // Phase: shifted interdimensional diamond outlines.
+  phase: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 3l5 5-5 5-5-5z" strokeOpacity="0.5" />
+      <path d="M12 7l5 5-5 5-5-5z" />
+    </g>
+  ),
+  // Timewarp: clock dial with sweeping hand.
+  timewarp: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="10" cy="10" r="7" />
+      <path d="M10 6v4l3 2" />
+      <path d="M10 1v2M10 17v2M1 10h2M17 10h2" strokeWidth="1.2" />
+    </g>
+  ),
+  // Surge: tri-stack charging lightning arrows.
+  surge: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 15l5-4 5 4M5 10l5-4 5 4M5 5l5-4 5 4" />
+    </g>
+  ),
+  // Ascendance: winged blade crest.
+  ascendance: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 2v16M10 3c3 3 7 4 7 9 0 3-2 5-5 5M10 3c-3 3-7 4-7 9 0 3 2 5 5 5" />
+      <path d="M7 9c1 1 2 2 3 2s2-1 3-2" />
+    </g>
+  ),
+  // Dominion: imperial spiked sovereign crown.
+  dominion: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 15h14l1-8-4 3-4-6-4 6-4-3z" fill="currentColor" fillOpacity="0.2" />
+      <circle cx="3" cy="7" r="1.2" fill="currentColor" />
+      <circle cx="10" cy="4" r="1.2" fill="currentColor" />
+      <circle cx="17" cy="7" r="1.2" fill="currentColor" />
+      <path d="M5 17h10" />
+    </g>
+  ),
+  // Black Hole: event horizon accretion ring and dense core.
+  black_hole: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+      <circle cx="10" cy="10" r="3" fill="currentColor" />
+      <path d="M10 3a7 7 0 0 1 7 7M10 17a7 7 0 0 1-7-7" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="17" cy="10" r="1.2" fill="currentColor" />
+      <circle cx="3" cy="10" r="1.2" fill="currentColor" />
     </g>
   ),
 };

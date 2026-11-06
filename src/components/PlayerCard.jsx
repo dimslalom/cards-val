@@ -87,7 +87,7 @@ export default function PlayerCard({
   const maskImage = face ? face.mask : `url(${bgSrc})`;
   const specialties = showSpecialties ? getCardSpecialties(card) : [];
   const specColor = face ? face.metal[1] : SPEC_COLOR[card.palette] ?? SPEC_COLOR.gold;
-  const showFx = Boolean(face) && evoFx && face.tier !== 'common';
+  const showFx = Boolean(face) && evoFx && (face.tier !== 'common' || card.evoLevel === 2);
 
   const {
     tiltRef,

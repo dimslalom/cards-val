@@ -94,14 +94,110 @@ export const SPECIALTIES = {
     color: '#fbbf24',
     desc: 'Dominates their lane to create space. Winning this lane boosts all other lanes by +0.2x.',
   },
+  ironclad: {
+    key: 'ironclad',
+    name: 'Ironclad',
+    code: 'ICD',
+    short: 'Fortress anchor',
+    board: 'Lane immune to tactic debuffs; +3',
+    color: '#f59e0b',
+    desc: 'Fortifies the lane. Immune to enemy tactic debuffs on this lane, and grants +3 armor.',
+  },
+  lurk: {
+    key: 'lurk',
+    name: 'Lurk',
+    code: 'LRK',
+    short: 'Cloaked flank',
+    board: 'Stealthed until resolve; +4 vs 1',
+    color: '#2dd4bf',
+    desc: 'Shrouded from opponent until resolve. Grants +4 duel power when opposing lane has only 1 card.',
+  },
+  velocity: {
+    key: 'velocity',
+    name: 'Velocity',
+    code: 'VEL',
+    short: 'Swift flank',
+    board: 'Flashes to clutched losing lane',
+    color: '#84cc16',
+    desc: 'Rapid tactical reaction. Automatically rotates to flip a losing lane during resolve (-4 sprint fatigue).',
+  },
+  combustion: {
+    key: 'combustion',
+    name: 'Combustion',
+    code: 'CMB',
+    short: 'Solar eclipse',
+    board: 'Win lane: -20% adjacent enemy star',
+    color: '#fb923c',
+    desc: 'Blazes through resistance. Winning this lane blinds the adjacent enemy star, dampening their rating by 20% (up to -10).',
+  },
+  phase: {
+    key: 'phase',
+    name: 'Phase',
+    code: 'PHS',
+    short: 'Dimensional shift',
+    board: 'Siphons +4 from facing synergy',
+    color: '#a855f7',
+    desc: 'Phases through enemy bonds. Siphons +4 from the opposing player if they have an active Team or Nation synergy.',
+  },
+  timewarp: {
+    key: 'timewarp',
+    name: 'Timewarp',
+    code: 'TRP',
+    short: 'Temporal surge',
+    board: 'Losing by <=6: +6 rewind surge',
+    color: '#eab308',
+    desc: 'Bends the final moments. If an allied lane is losing by 6 or fewer, grants +6 rewind surge to that lane.',
+  },
+  surge: {
+    key: 'surge',
+    name: 'Surge',
+    code: 'SRG',
+    short: 'Chain lightning',
+    board: 'With ally: -4 adjacent enemy lane',
+    color: '#38bdf8',
+    desc: 'Storms the objective. When paired with an ally, shocks an adjacent enemy lane for -4.',
+  },
+  ascendance: {
+    key: 'ascendance',
+    name: 'Ascendance',
+    code: 'ASC',
+    short: 'Divine blessing',
+    board: 'Trailing <=10: +8 to ally, or +4',
+    color: '#fb7185',
+    desc: 'Transcends the battlefield. Grants +8 to an allied lane trailing by 10 or fewer, or +4 to self.',
+  },
+  dominion: {
+    key: 'dominion',
+    name: 'Dominion',
+    code: 'DMN',
+    short: 'Royal tribute',
+    board: 'Collects +2 per enemy synergy (max +8)',
+    color: '#d946ef',
+    desc: 'Total domain supremacy. Collects 2 points per active enemy synergy across all lanes (max +8).',
+  },
+  black_hole: {
+    key: 'black_hole',
+    name: 'Black Hole',
+    code: 'BKH',
+    short: 'Event horizon',
+    board: 'Pulls enemy star from other lane',
+    color: '#06b6d4',
+    desc: 'Inescapable gravitational pull. Drags the opponent highest-rated player from another lane into this lane.',
+  },
 };
 
 /** Skills a card can only learn by finishing an evo. */
-export const EVO_SKILLS = new Set(['anchor', 'first_blood', 'clutch', 'synergy_link', 'overdrive']);
+export const EVO_SKILLS = new Set([
+  'anchor', 'first_blood', 'clutch', 'synergy_link', 'overdrive',
+  'ironclad', 'lurk', 'velocity', 'combustion', 'phase', 'timewarp', 'surge',
+  'ascendance', 'dominion', 'black_hole',
+]);
 
 export const SPECIALTY_ORDER = [
   'flex', 'flick', 'one_trick', 'mastermind', 'aura',
   'anchor', 'first_blood', 'clutch', 'synergy_link', 'overdrive',
+  'ironclad', 'lurk', 'velocity', 'combustion', 'phase', 'timewarp', 'surge',
+  'ascendance', 'dominion', 'black_hole',
 ];
 
 // Curated from VLR player reputations. Keys are lowercased player names; the
