@@ -41,6 +41,7 @@ export default function PlayerCard({
   onClick,
   displayScale = 0.5,
   tilt = true,
+  isIgl = false,
   flippable = false,
   flipped = false,
   kit,
@@ -183,6 +184,11 @@ export default function PlayerCard({
 
             {/* ── FRONT FACE ── */}
             <div className={`${styles.face} ${styles.faceFront}`}>
+              {isIgl && (
+                <span className={styles.iglTab} role="img" aria-label="In-game leader">
+                  <span aria-hidden="true">IGL</span>
+                </span>
+              )}
               {face ? (
                 <div className={styles.layerBg} style={PLANE.bg} aria-hidden="true" dangerouslySetInnerHTML={{ __html: face.back }} />
               ) : (
