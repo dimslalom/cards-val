@@ -603,6 +603,27 @@ export function playUiSound(kind, step = 0) {
       });
       break;
 
+    case 'flawless': {
+      // VCT Flawless Round Stinger: heavy sub impact + bright shimmering unison brass chord + crowd air wash.
+      tone(116, 0.52, { endFrequency: 36, gain: 0.048, type: 'sine', drive: true, wet: 0.32 });
+      noiseBurst(0.38, { pink: true, freq: 500, endFreq: 4200, q: 0.9, gain: 0.026, attack: 0.015, wet: 0.46 });
+      [196, 246.94, 293.66, 392, 493.88, 587.33].forEach((freq, i) => {
+        tone(freq, 0.5, {
+          gain: 0.015 - i * 0.0012,
+          type: 'sawtooth',
+          unison: 3,
+          detuneSpread: 12,
+          attack: 0.02,
+          filterFreq: 3200,
+          filterEndFreq: 1100,
+          delay: i * 0.038,
+          pan: (i - 2.5) * 0.18,
+          wet: 0.48,
+        });
+      });
+      break;
+    }
+
     case 'round_loss':
       // Round Lost Broadcast Resolve: heavy sub-drop + warm low-passed minor cadence.
       tone(98, 0.38, { endFrequency: 38, gain: 0.034, type: 'sine', drive: true, wet: 0.25 });
