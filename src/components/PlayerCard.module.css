@@ -289,6 +289,12 @@
   pointer-events: none;
 }
 
+/* Stat-free card (e.g. Manager silhouette): portrait fills the whole card frame */
+.tilt[data-no-stats='true'] .layerPhoto {
+  height: 100%;
+  object-fit: cover;
+}
+
 /* ── Layer 2: stat panel bg - full 400×580 PNG, transparent top ── */
 .layerStatBg {
   position: absolute;

@@ -68,6 +68,9 @@ export default function PlayerCard({
   // Opt-in: an evolved rare or apex card runs its effects around the card.
   // Only big, focused cards should: grids and docks show the card still.
   evoFx = false,
+  // Opt-out for pure portrait / silhouette cards (e.g. Manager cards).
+  showStats = true,
+  showStatBg = true,
 }) {
   // Latched the first time this card is turned, so the return flip animates
   // while a card that mounts face-up plays nothing - every card in the game
@@ -77,16 +80,17 @@ export default function PlayerCard({
   const [turned, setTurned] = useState(false);
   if (flipped && !turned) setTurned(true);
 
+  const palette = card.palette ?? 'silver';
   // An evolved card wears its evo's art instead of the tier metal.
   const face = card.evoTheme ? evoFace(card.evoTheme, card.evoLevel) : null;
-  const textColor  = face ? face.ink : cardTextColor(card.palette);
+  const textColor  = face ? face.ink : cardTextColor(palette);
   const mutedColor = textColor + 'aa';
-  const showEditionTop = card.tier === 'prestige' || card.tier === 'iconic';
-  const regionLogo = assetPath(`/assets/regions/${card.region.toLowerCase()}.png`);
-  const bgSrc = assetPath(`/assets/card-bg/${card.palette}-bg.png`);
+  const showEditionTop = showStats && (card.tier === 'prestige' || card.tier === 'iconic');
+  const regionLogo = card.region ? assetPath(`/assets/regions/${card.region.toLowerCase()}.png`) : null;
+  const bgSrc = assetPath(`/assets/card-bg/${palette}-bg.png`);
   const maskImage = face ? face.mask : `url(${bgSrc})`;
-  const specialties = showSpecialties ? getCardSpecialties(card) : [];
-  const specColor = face ? face.metal[1] : SPEC_COLOR[card.palette] ?? SPEC_COLOR.gold;
+  const specialties = showSpecialties && showStats ? getCardSpecialties(card) : [];
+  const specColor = face ? face.metal[1] : SPEC_COLOR[palette] ?? SPEC_COLOR.gold;
   const showFx = Boolean(face) && evoFx && (face.tier !== 'common' || card.evoLevel === 2);
 
   const {
@@ -151,11 +155,12 @@ export default function PlayerCard({
         <div
           ref={tiltRef}
           className={[styles.tilt, onClick ? styles.clickable : ''].join(' ')}
-          data-palette={card.palette}
+          data-palette={palette}
           data-tier={card.tier}
           data-evo-theme={card.evoTheme || undefined}
           data-evo-level={card.evoLevel || undefined}
           data-flipped={flipped ? 'true' : turned ? 'back' : undefined}
+          data-no-stats={!showStats && !showStatBg ? 'true' : undefined}
           style={{
             fontFamily: "'Familjen Grotesk', sans-serif",
             '--spec': specColor,
@@ -206,78 +211,82 @@ export default function PlayerCard({
 
               {face && <div className={styles.layerEvoFrame} style={PLANE.evoFrame} aria-hidden="true" dangerouslySetInnerHTML={{ __html: face.front }} />}
 
-              {!face && <img
+              {!face && showStatBg && <img
                 className={styles.layerStatBg}
                 style={PLANE.top}
-                src={assetPath(`/assets/stat-bg/${card.palette}-stat-bg.png`)}
+                src={assetPath(`/assets/stat-bg/${palette}-stat-bg.png`)}
                 alt=""
                 aria-hidden="true"
                 draggable={false}
               />}
 
-              <div className={styles.layerText} style={PLANE.top}>
-                <div className={styles.topLeft}>
-                  <span style={{ fontSize: 68, fontWeight: 700, color: textColor, lineHeight: 1 }}>
-                    {card.rating}
-                  </span>
-                  <span style={{ fontSize: 28, fontWeight: 600, letterSpacing: '0.02em', color: textColor }}>
-                    {roleAbbr(card.role)}
-                  </span>
-                  <CountryFlag code={card.nationality} style={{ width: 46, height: 34, borderRadius: 2 }} />
-                </div>
-
-                {(showEditionTop || signals) && (
-                  <div className={styles.topRight}>
-                    {showEditionTop && (
-                      <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textAlign: 'right', maxWidth: 70, color: textColor, lineHeight: 1.3 }}>
-                        {card.edition}
-                      </span>
-                    )}
-                    {/* Where this player is in their career, and which way
-                        they are going. Shown as a chip and a mark, the same
-                        register as the role abbreviation and the flag - data
-                        on the card, not a sentence somewhere else. */}
-                    {signals && (
-                      <span className={styles.stageMark} data-stage={signals.stage} style={{ color: textColor }}>
-                        {signals.trend !== 0 && (
-                          <i
-                            className={styles.trend}
-                            data-dir={signals.trend > 0 ? 'up' : 'down'}
-                            aria-hidden="true"
-                          />
-                        )}
-                        {STAGE_LABEL[signals.stage]}
-                      </span>
-                    )}
+              {showStats && (
+                <div className={styles.layerText} style={PLANE.top}>
+                  <div className={styles.topLeft}>
+                    <span style={{ fontSize: 68, fontWeight: 700, color: textColor, lineHeight: 1 }}>
+                      {card.rating}
+                    </span>
+                    <span style={{ fontSize: 28, fontWeight: 600, letterSpacing: '0.02em', color: textColor }}>
+                      {roleAbbr(card.role)}
+                    </span>
+                    <CountryFlag code={card.nationality} style={{ width: 46, height: 34, borderRadius: 2 }} />
                   </div>
-                )}
 
-                <div className={styles.playerName} style={{ color: textColor }}>
-                  {card.player}
-                </div>
-
-                <div className={styles.statContent}>
-                  <div className={styles.statRow}>
-                    {STAT_KEYS.map((key) => (
-                      <div key={key} className={styles.statItem} data-lit={key === highlightStat || undefined}>
-                        <span style={{ fontSize: 20, fontWeight: 600, color: key === highlightStat ? '#ffffffcc' : mutedColor }}>
-                          {STAT_LABELS[key]}
+                  {(showEditionTop || signals) && (
+                    <div className={styles.topRight}>
+                      {showEditionTop && (
+                        <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textAlign: 'right', maxWidth: 70, color: textColor, lineHeight: 1.3 }}>
+                          {card.edition}
                         </span>
-                        <span style={{ fontSize: 38, fontWeight: 700, color: key === highlightStat ? '#ffffff' : textColor }}>
-                          {card.stats[key]}
+                      )}
+                      {/* Where this player is in their career, and which way
+                          they are going. Shown as a chip and a mark, the same
+                          register as the role abbreviation and the flag - data
+                          on the card, not a sentence somewhere else. */}
+                      {signals && (
+                        <span className={styles.stageMark} data-stage={signals.stage} style={{ color: textColor }}>
+                          {signals.trend !== 0 && (
+                            <i
+                              className={styles.trend}
+                              data-dir={signals.trend > 0 ? 'up' : 'down'}
+                              aria-hidden="true"
+                            />
+                          )}
+                          {STAGE_LABEL[signals.stage]}
                         </span>
-                      </div>
-                    ))}
+                      )}
+                    </div>
+                  )}
+
+                  <div className={styles.playerName} style={{ color: textColor }}>
+                    {card.player}
                   </div>
 
-                  <div className={styles.logoRow}>
-                    {card.org_logo && (
-                      <img src={assetPath(card.org_logo)} alt={card.org} style={{ width: 32, height: 32, objectFit: 'contain' }} draggable={false} />
-                    )}
-                    <img src={regionLogo} alt={card.region} style={{ width: 32, height: 32, objectFit: 'contain' }} draggable={false} />
+                  <div className={styles.statContent}>
+                    <div className={styles.statRow}>
+                      {STAT_KEYS.map((key) => (
+                        <div key={key} className={styles.statItem} data-lit={key === highlightStat || undefined}>
+                          <span style={{ fontSize: 20, fontWeight: 600, color: key === highlightStat ? '#ffffffcc' : mutedColor }}>
+                            {STAT_LABELS[key]}
+                          </span>
+                          <span style={{ fontSize: 38, fontWeight: 700, color: key === highlightStat ? '#ffffff' : textColor }}>
+                            {card.stats?.[key]}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className={styles.logoRow}>
+                      {card.org_logo && (
+                        <img src={assetPath(card.org_logo)} alt={card.org} style={{ width: 32, height: 32, objectFit: 'contain' }} draggable={false} />
+                      )}
+                      {regionLogo && (
+                        <img src={regionLogo} alt={card.region} style={{ width: 32, height: 32, objectFit: 'contain' }} draggable={false} />
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               <div
                 className={styles.glare}
