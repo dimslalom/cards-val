@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { assetPath } from '../lib/utils';
-import { animate as animeAnimate, MS, ANIME_EASE } from '../lib/anime';
+import { DUR, EASE } from '../lib/motion';
 import useReducedMotion, { prefersReducedMotion } from '../lib/useReducedMotion';
 import { playUiSound } from '../lib/gameAudio';
 import styles from './PackTear.module.css';
@@ -69,9 +69,13 @@ export default function PackTear({
     if (st.current.finished) return;
     st.current.finished = true;
     if (bodyRef.current && !prefersReducedMotion()) {
-      bodyAnimationRef.current = animeAnimate(bodyRef.current, { translateY: 60, rotateX: 25, opacity: [1, 0], duration: MS.enter, ease: ANIME_EASE.in });
+      const duration = DUR.enter * 1000;
+      bodyAnimationRef.current = bodyRef.current.animate(
+        [{ opacity: 1 }, { transform: 'translateY(60px) rotateX(25deg)', opacity: 0 }],
+        { duration, easing: `cubic-bezier(${EASE.in.join(', ')})`, fill: 'forwards' },
+      );
       // Keep the foil mounted until its 380ms flight has also completed.
-      timersRef.current.push(setTimeout(() => onTorn?.(), Math.max(MS.enter, 380)));
+      timersRef.current.push(setTimeout(() => onTorn?.(), Math.max(duration, 380)));
     } else onTorn?.();
   };
 

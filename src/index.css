@@ -1,3 +1,6 @@
+/* ui-sdk injects its few behaviour styles into this layer; declaring it first
+   lets every app style win over it. */
+@layer ui-sdk;
 @import './styles/tokens.css';
 @import './styles/team-logos.css';
 
@@ -5,8 +8,8 @@
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  background: var(--color-bg, #0d0f17);
-  color: var(--color-text, #f5f2ff);
+  background: var(--bg);
+  color: var(--ink);
   font: 600 0.9rem/1.4 'Familjen Grotesk', sans-serif;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -93,9 +96,26 @@ button:disabled {
   outline: none;
 }
 
+/* Waiting on the network: the button keeps its place and label but stops
+   taking presses, so a second tap can't fire the request twice. */
+button[aria-busy='true'] {
+  cursor: progress;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 input, select, textarea {
   font-family: inherit;
   color: inherit;
+}
+
+/* iOS Safari zooms the whole page into any field whose text is under 16px,
+   and --fs-body is 15px. !important because module classes size their own
+   fields; this only bites on touch screens. */
+@media (pointer: coarse) {
+  input:not([type='range'], [type='checkbox'], [type='radio']), select, textarea {
+    font-size: max(16px, 1em) !important;
+  }
 }
 
 /* Screen-reader-only text. Used for the labels that were previously carried
